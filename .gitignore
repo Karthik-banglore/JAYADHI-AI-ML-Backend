@@ -195,3 +195,6 @@ cython_debug/
 
 # Personal notes and directories
 my_md/
+
+# Personal reference files
+my-quick-reference.md
