@@ -3,10 +3,17 @@ import json
 import time
 import os
 import sys
+import pathlib
 
-from sentiment_analysis.sentiment_analyzer import SentimentAnalyzer
-from sentiment_analysis.personalization_engine import PersonalizationEngine
-from sentiment_analysis.validators import RequestValidator
+
+# Add the 'sentiment-analysis' directory to the Python path
+# This allows the tests to import modules just like api_server.py does.
+sentiment_analysis_dir = str(pathlib.Path(__file__).parent.parent / 'sentiment-analysis')
+sys.path.insert(0, sentiment_analysis_dir)
+
+from sentiment_analyzer import SentimentAnalyzer
+from personalization_engine import PersonalizationEngine
+from validators import RequestValidator
 
 class TestSentimentAnalyzer(unittest.TestCase):
     """Test cases for sentiment analysis functionality."""
