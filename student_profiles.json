@@ -1,0 +1,26 @@
+{
+    "student001": {
+        "student_id": "student001",
+        "name": "New Student",
+        "current_difficulty": 2,
+        "performance_history": [
+            0.25
+        ],
+        "sentiment_history": [
+            {
+                "text": "This is too hard for me, I am frustrated",
+                "emotion": "negative",
+                "vader_scores": {
+                    "neg": 0.407,
+                    "neu": 0.593,
+                    "pos": 0.0,
+                    "compound": -0.5859
+                },
+                "textblob_scores": {
+                    "polarity": -0.49583333333333335,
+                    "subjectivity": 0.37083333333333335
+                }
+            }
+        ]
+    }
+}
