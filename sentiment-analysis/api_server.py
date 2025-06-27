@@ -1,4 +1,9 @@
 from flask import Flask, request, jsonify
+import time
+import traceback
+import atexit
+
+# Import all the components
 from sentiment_analyzer import SentimentAnalyzer
 from personalization_engine import PersonalizationEngine
 import config
