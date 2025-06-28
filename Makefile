@@ -27,7 +27,7 @@ run:
 
 # Target to run automated curl tests for API endpoints
 test-api:
-	@echo "Running automated API tests..."
+	@echo "Running automated API tests (curl)..."
 	# Give the server a moment to start if it was just launched
 	sleep 5
 	@echo "Testing /sentiment/analyze endpoint..."
@@ -36,7 +36,13 @@ test-api:
 	curl http://localhost:5000/personalization/difficulty?student_id=test_student_1
 	@echo "\nTesting /personalization/performance endpoint..."
 	curl -X POST -H "Content-Type: application/json" -d '{"student_id": "test_student_1", "activity_id": "math_quiz_1", "score": 90, "time_taken_seconds": 120}' http://localhost:5000/personalization/performance
-	@echo "\nAPI tests complete."
+	@echo "\nAPI tests (curl) complete."
+
+test-python-api:
+	@echo "Running automated API tests (Python script)..."
+	$(PYTHON_VENV) test_api_endpoints.py
+	@echo "API tests (Python script) complete."
+
 
 # Target to clean up the virtual environment and cache files
 clean:

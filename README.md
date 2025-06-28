@@ -96,11 +96,23 @@ We utilize `Makefile` to streamline common development tasks. Ensure you have `m
     make run
     ```
     This command will start the main API server (e.g., `sentiment-analysis/api_server.py`). The server will typically run in the background.
-*   **Run Tests:**
+*   **Run Tests (cURL):**
     ```bash
     make test-api
     ```
-    This command will execute the API-related tests (e.g., `sentiment-analysis/test_sentiment_system.py`).
+    This command will execute basic API tests using cURL.
+
+*   **Run Tests (Python Script):**
+    ```bash
+    make test-python-api
+    ```
+    This command will execute comprehensive API tests using the `test_api_endpoints.py` script.
+
+*   **Clean Up:**
+    ```bash
+    make clean
+    ```
+    This command will remove the virtual environment and cache files.
 
 ## Git Collaboration Guidelines
 
