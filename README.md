@@ -6,6 +6,20 @@ The JAYADHI Educational Platform aims to revolutionize personalized learning thr
 
 This repository houses the core AI/ML backend services that power the JAYADHI platform.
 
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+*   **Git:** For cloning the repository and version control.
+*   **Python 3.8+:** Our backend is built with Python.
+*   **Node.js (LTS recommended):** Required for the Google Gemini CLI.
+*   **npm (Node Package Manager):** Comes with Node.js, used for installing Gemini CLI.
+*   **Google Gemini CLI:** Used for interacting with the Gemini API. Install it globally:
+    ```bash
+    npm install -g @google/generative-ai-cli
+    ```
+*   **Make:** A build automation tool used for streamlining development tasks.
+
 ## Team Structure and Responsibilities
 
 Our 6-person AI/ML team is structured with clear roles and dedicated working areas within this repository to facilitate efficient collaboration.
