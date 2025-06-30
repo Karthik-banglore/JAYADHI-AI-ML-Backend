@@ -12,13 +12,7 @@ Before you begin, ensure you have the following installed:
 
 *   **Git:** For cloning the repository and version control.
 *   **Python 3.8+:** Our backend is built with Python.
-*   **Node.js (LTS recommended):** Required for the Google Gemini CLI.
-*   **npm (Node Package Manager):** Comes with Node.js, used for installing Gemini CLI.
-*   **Google Gemini CLI:** Used for interacting with the Gemini API. Install it globally:
-    ```bash
-    npm install -g @google/generative-ai-cli
-    ```
-*   **Make:** A build automation tool used for streamlining development tasks.
+
 
 ## Team Structure and Responsibilities
 
