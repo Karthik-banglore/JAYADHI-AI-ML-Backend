@@ -99,3 +99,11 @@ student_profiles.json
 .env
 .env.local
 .env.*.local
+
+# Large dataset files
+fruits-360_100x100/
+fruits-360_3-body-problem/
+fruits-360_dataset_meta/
+fruits-360_multi/
+fruits-360_original-size/
+fruits.zip
