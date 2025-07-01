@@ -1,0 +1,181 @@
+# JAYADHI AI for ALL – Frontend API Integration Guide
+
+## Base URL  
+http://localhost:5001
+
+---
+## Authentication & CORS
+
+Our backend is configured to accept JSON and allow cross-origin requests from any origin (including your React dev server on `localhost:3000`):
+
+This CORS setup is a professional security practice that grants your React app permission to call our AI services.
+
+- All endpoints accept `application/json`
+- CORS is enabled for all origins: CORS(app, resources={r”/api/”: {“origins”: “”}})
+
+
+## Available Endpoints
+
+### 1. AI Tutor Chatbot ✅ WORKING  
+**Endpoint:** POST `/api/chatbot`  
+**Purpose:** Conversational AI assistance with emotional awareness.
+
+**Request**  
+
+{
+“student_id”: “test_001”,
+“message”: “I feel stuck”,
+“topic”: “general” //optional
+}
+**Test Command:**
+curl -X POST -H "Content-Type: application/json" -d '{"student_id":"test_001","message":"I feel stuck"}' http://localhost:5001/api/chatbot
+
+**Verified Response:**
+{
+  "emotion_detected": "negative",
+  "reply": "I\u2019m sorry you\u2019re feeling stuck. Let\u2019s tackle it together\u2014what part is most confusing?",
+  "student_id": "test_001",
+  "tone": "empathetic",
+  "topic": "general"
+}
+
+
+
+### 2. Sentiment Analysis ✅ WORKING
+
+**Endpoint:** `POST /api/sentiment`
+**Purpose:** Detect emotional tone of a student’s message.
+
+**Request**  
+
+{
+“student_id”: “test_001”,
+“message”: “I am confused”
+}
+
+**Test Command:**
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"student_id":"test_001", "message":"I am confused"}' \
+  http://localhost:5001/api/sentiment
+
+**Verified Response:**
+{“emotion”: “negative”,
+“scores”: {
+    “compound”: -0.3182,
+    “neg”: 0.535,
+    “neu”: 0.465,
+    “pos”: 0.0
+    },
+    “suggested_tone”: “empathetic”
+}
+### 3. Adaptive Difficulty ✅ WORKING
+
+**Endpoint:** `GET /api/difficulty/<student_id>`
+**Purpose:**  Retrieve current difficulty level for personalized challenges.
+
+**Test Command:**
+curl -X GET http://localhost:5001/api/difficulty/test_001
+
+**Verified Response:**
+{
+  "difficulty_level": 4,
+  "student_id": "test_001"
+}
+
+### 4. Performance Tracking ✅ WORKING
+
+**Endpoint:** `POST /api/performance`
+**Purpose:** Log a student’s score and automatically adjust difficulty.
+
+**Request**
+{
+“student_id”: “test_001”,
+“score”: 85
+}
+
+**Test Command:**
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"student_id":"test_001", "score":85}' \
+  http://localhost:5001/api/performance
+
+**verified response**
+{
+  "message": "Performance updated successfully",
+  "new_difficulty": 5
+}
+
+
+## Frontend Integration Examples
+
+### React Components
+
+const API_BASE_URL = ‘http://localhost:5001’;
+// Chatbot
+async function chatWithBot(studentId, message, topic = ‘general’) {
+    const res = await fetch(`${API_BASE_URL}/api/chatbot`, {
+        method: ‘POST’,
+
+        headers: { ‘Content-Type’: ‘application/json’ },
+        body: JSON.stringify({
+            student_id: studentId,
+            message: message,
+            topic: topic
+            })
+            });
+            return res.json();  //response.json()
+            };
+
+// Sentiment Analysis
+async function analyzeSentiment(studentId, message) {
+    const res = await fetch(`${API_BASE_URL}/api/sentiment`, {
+        method: ‘POST’,
+        headers: { ‘Content-Type’: ‘application/json’ },
+        body: JSON.stringify({ student_id: studentId, message })
+        });
+        return res.json();
+        };
+
+// Get Difficulty
+
+    async function 
+    getDifficulty(studentId) {
+        const res = await fetch(`${API_BASE_URL}/api/difficulty/${studentId}`);
+        return res.json();
+        }
+
+// Update Performance
+async function updatePerformance(studentId, score) {
+    const res = await fetch(`${API_BASE_URL}/api/performance`, {
+        method: ‘POST’,
+        headers: { ‘Content-Type’: ‘application/json’ },
+        body: JSON.stringify({ student_id: studentId, score })
+        });
+        return res.json();
+        }
+
+
+---
+
+## Educational Games Integration Readiness
+
+The AI backend supports five core modules:
+
+1. **What Is AI?** – Interactive quiz with chatbot hints  
+2. **Machine Learning 101** – Fruit classification using the Fruits-360 subset  
+3. **Data Detective** – Data cleaning puzzle with sentiment assistance  
+4. **Train Your Bot** – Pattern recognition training & adaptive difficulty  
+5. **Neural Network Maze** – Visual maze illustrating neural network layers  
+
+---
+
+ NOTE: To enable immediate integration and testing. All endpoints are CORS-enabled and return clear JSON responses. For any issues, contact the AI/ML team .
+
+
+Next: Step-by-Step Project Completion Plan
+1.	Fruit Classifier Game: Curate a diverse dataset, train the model, integrate `/api/game/fruit/classify`.
+2.	“What Is AI?” Quiz: Build interactive quiz with sentiment-aware hints.
+3.	“Data Detective” Puzzle: Implement data-cleaning game with adaptive difficulty.
+4.	“Train Your Bot” Simulator: Develop pattern-recognition game.
+5.	“Neural Network Maze”: Create visual neural-network navigation game.
+6.	Teacher Dashboard: Aggregate class analytics and reports.
+7.	Production Deployment: Containerize, secure, and deploy our backend and frontend.
