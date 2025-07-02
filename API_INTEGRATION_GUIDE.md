@@ -179,3 +179,142 @@ Next: Step-by-Step Project Completion Plan
 5.	“Neural Network Maze”: Create visual neural-network navigation game.
 6.	Teacher Dashboard: Aggregate class analytics and reports.
 7.	Production Deployment: Containerize, secure, and deploy our backend and frontend.
+
+---
+**Date:2 July 2025(Updates)**
+
+### Fruit Classifier Game API Integration Guide
+
+Base URL:
+`http://localhost:5001`
+1. Get Fruit Classes
+**Endpoint**
+`GET /api/game/fruit/classes`
+**Description**
+**Fetches a list of all fruit names the AI model can recognize. Use this to dynamically build the UI buttons or dropdown for user guesses.
+**Request**
+No request body or parameters.
+**Response** (200 OK)
+A JSON array of unique, sorted fruit names (strings). Example:
+[
+  "Apple",
+  "Banana",
+  "Beans",
+  "Blackberrie",
+  "Cabbage",
+  "Carrot",
+  "Cherry",
+  "Cucumber",
+  "Pear",
+  "Tomato"
+]
+
+**Error Responses**
+`500 Internal Server Error` if the model or class list is not loaded.
+{ "error": "Fruit classes not available" }
+
+**Frontend Usage Example (JavaScript)**
+async function getFruitClasses() {
+  const res = await fetch(`${API_BASE_URL}/api/game/fruit/classes`);
+  if (!res.ok) throw new Error('Failed to fetch fruit classes');
+  return res.json();
+}
+
+2. Get Random Fruit Challenge
+**Endpoint**
+`GET /api/game/fruit/random`
+**Description**
+Returns a random fruit test image (base64 encoded) and its correct simple name. This starts a new game round.
+**Request**
+No request body or parameters.
+**Response** (200 OK)
+A JSON object with the following fields:
+{
+  "display_name": "Apple",
+  "image_data": "image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+}
+`display_name`: The correct answer for this image (e.g., “Apple”).
+`image_data`: Base64-encoded JPEG image string, ready to use as an `<img>` src.
+**Error Responses**
+`500 Internal Server Error` if the model or images are unavailable.
+`404 Not Found` if no test images exist for the selected class.
+**Example**
+{ "error": "No test images found for class: Apple 10" }
+
+**Frontend Usage Example (JavaScript)**
+
+```javascript
+async function getRandomFruitChallenge() {
+  const res = await fetch(`${API_BASE_URL}/api/game/fruit/random`);
+  if (!res.ok) throw new Error('Failed to fetch random fruit challenge');
+  return res.json();
+}
+```
+3. Submit a Guess
+**Endpoint**
+`POST /api/game/fruit/classify`
+**Description**
+Sends the current challenge image and the student’s guess to the backend for classification and feedback.
+**Request Body (JSON)**
+
+{
+  "image_data": "image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD...",  // The image string from `/random`
+  "guess": "Apple"  // The student's guess (must be one of the display names)
+}
+
+**Response (200 OK)**
+
+{
+  "predicted_label": "Apple",
+  "confidence": 0.9987,
+  "is_correct": true,
+  "educational_message": "Correct! Did you know there are over 7,500 varieties of apples grown worldwide?"
+}
+
+`predicted_label`: The AI’s top prediction (simple name).
+`confidence`: Model confidence (0 to 1).
+`is_correct`: True if the student’s guess matches the AI’s prediction.
+`educational_message`: A fun fact or encouragement based on correctness.
+
+**Error Responses**
+`400 Bad Request` if `image_data` or `guess` is missing.
+`500 Internal Server Error` if the model is unavailable.
+
+**Example:**
+{ "error": "Request must contain 'image_data' and 'guess'" }
+
+**Frontend Usage Example (JavaScript)**
+async function submitGuess(imageData, guess) {
+  const res = await fetch(`${API_BASE_URL}/api/game/fruit/classify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image_ imageData, guess: guess })
+  });
+  if (!res.ok) throw new Error('Failed to submit guess');
+  return res.json();
+}
+
+**NOTE:** 
+## All endpoints expect and return JSON.
+## CORS is enabled for all `/api/*` endpoints, so your frontend can call these APIs directly from `localhost:3000` or any other origin.
+## Image data is base64-encoded JPEG strings to avoid file upload complexities.
+## Display names are simplified (e.g., `"Apple"`) even if the internal model classes are more specific (e.g., `"Apple 10"`).
+**RESULTS:**
+```bash
+kend % curl http://localhost:5001/api/game/fruit/classes
+
+[
+  "Apple",
+  "Banana",
+  "Beans",
+  "Blackberrie",
+  "Cabbage",
+  "Cherry",
+  "Cucumber",
+  "Tomato",
+  "carrot",
+  "pear"
+]
+```
+## The backend compares the student’s guess with the model’s prediction in a case-insensitive substring match to allow flexible matching.
+
