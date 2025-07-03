@@ -40,8 +40,9 @@ Our 6-person AI/ML team is structured with clear roles and dedicated working are
 
 The JAYADHI AI/ML Backend operates around a central API server that orchestrates various AI/ML functionalities.
 
-**Conceptual Architecture:**
+**conceptual architecture diagram:**
 
+```
 +---------------------+       +---------------------+
 |   Student/Teacher   |       |   External Systems  |
 |     Frontends       |       |    (e.g., LMS)      |
@@ -58,7 +59,7 @@ The JAYADHI AI/ML Backend operates around a central API server that orchestrates
            |          |          |          |          |
            v          v          v          v          v
 |  Sentiment Analysis | Personalisation | Chatbot | Game Logic |
-|(`sentiment-analysis/`)|(`sentiment-analysis/`)|(`chatbot-engine/`)(`game-logic/`)|
+|  (`sentiment-analysis/`) | (`sentiment-analysis/`) | (`chatbot-engine/`) | (`game-logic/`)   |
            ^
            | (Data/Model Interaction)
            |
@@ -66,7 +67,7 @@ The JAYADHI AI/ML Backend operates around a central API server that orchestrates
 |    Data Curation    |
 |   (`data-curation/`)|
 +---------------------+
-
+```
 
 **Key Components:**
 
