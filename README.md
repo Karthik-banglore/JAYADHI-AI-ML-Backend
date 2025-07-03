@@ -15,26 +15,23 @@ Before you begin, ensure you have the following installed:
 
 ## Team Structure and Responsibilities
 
-Our 6-person AI/ML team is structured with clear roles and dedicated working areas within this repository to facilitate efficient collaboration.
+Our 4-person AI/ML team is structured with clear roles and dedicated working areas within this repository to facilitate efficient collaboration.
 
 * **Karthik (Lead & Sentiment Analysis):**
     * **Working Area:** `sentiment-analysis/`
-    * **Responsibilities:** Core sentiment analysis engine development, personalization engine integration, API server management.
+    * **Responsibilities:** Core sentiment analysis engine development, personalization engine integration, API server management, and game logic development and testing.
 * **Anoop (Chatbot Development):**
     * **Working Area:** `chatbot-engine/`
     * **Responsibilities:** Developing and integrating the AI chatbot, consuming sentiment analysis APIs.
 * **Anangsha (Game Logic Implementation):**
-    * **Working Area:** `game-logic/`
-    * **Responsibilities:** Implementing adaptive game logic, integrating with personalization and performance data APIs.
-* **[Team Member 4] (AI Support/General ML):**
-    * **Working Area:** `ai-support/`
-    * **Responsibilities:** General AI/ML model development, supporting various platform features.
-* **[Team Member 5] (Data Curation):**
+    * **Working Area:** `model-training/`
+    * **Responsibilities:** training and implementing game logic, integrating with the personalization engine.
+* **Tanuja Bisen (Data Curation):**
     * **Working Area:** `data-curation/`
     * **Responsibilities:** Managing data pipelines, ensuring data quality for ML models.
-* **[Team Member 6] (Explainability/Monitoring):**
-    * **Working Area:** `explainability/`
-    * **Responsibilities:** Developing tools for model explainability and performance monitoring.
+* **Anshika Kapoor (AI Support/General ML):**
+    * **Working Area:** `ai-support/`
+    * **Responsibilities:** General AI/ML model development, supporting various platform features.
 
 ## Technical Architecture Documentation
 
