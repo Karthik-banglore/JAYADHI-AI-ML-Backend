@@ -1,4 +1,4 @@
-# sentiment-analysis/api_server.py (Corrected and Refactored Version)
+# sentiment-analysis/api_server.py (Updated with Prompt & Pattern endpoints)
 
 import os
 import json
@@ -10,11 +10,13 @@ import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model # type: ignore
+import requests
+import re
 
 from sentiment_analyzer import SentimentAnalyzer
 from personalization_engine import PersonalizationEngine
 from chatbot import ChatBot
-from image_classifier import ImageClassifier # Assuming you have this file
+from image_classifier import ImageClassifier
 import config
 
 # --- App & CORS Initialization ---
@@ -30,14 +32,11 @@ print("✅ Sentiment, Personalization, and ChatBot components loaded.")
 
 # --- Load or Train Fruit Classifier ---
 project_root = os.path.dirname(os.path.abspath(__file__))
-# Correct path to the data subset, one level up from the 'sentiment-analysis' directory
 data_dir = os.path.join(project_root, '..', 'data-curation', 'fruits-360-subset')
 model_path = os.path.join(project_root, '..', 'fruit_model.h5')
 
-# Initialize the classifier with the correct data directory
 image_classifier = ImageClassifier(data_dir=data_dir)
 
-# Load or train the model
 if os.path.exists(model_path):
     print(f"Loading existing model from: {model_path}")
     image_classifier.load_existing_model(model_path)
@@ -48,10 +47,10 @@ else:
     image_classifier.model.save(model_path)
     print(f"✅ New model trained and saved to {model_path}")
 
-# Invert the class_indices map for easy lookup from index to label
 fruit_class_names = {v: k for k, v in image_classifier.class_indices.items()}
 
 # === API ENDPOINTS ===
+
 @app.route('/')
 def index():
     return "JAYADHI AI for ALL: Personalization & Sentiment Server is running."
@@ -64,7 +63,11 @@ def analyze_sentiment():
     message = data['message']
     analysis_result = sentiment_analyzer.analyze(message)
     personalization_engine.log_sentiment(student_id, analysis_result)
-    response = { "emotion": analysis_result['emotion'], "scores": analysis_result['vader_scores'], "suggested_tone": "empathetic" if analysis_result['emotion'] == 'negative' else "encouraging" }
+    response = {
+        "emotion": analysis_result['emotion'],
+        "scores": analysis_result['vader_scores'],
+        "suggested_tone": "empathetic" if analysis_result['emotion'] == 'negative' else "encouraging"
+    }
     return jsonify(response)
 
 @app.route('/api/chatbot', methods=['POST'])
@@ -79,7 +82,8 @@ def chatbot_endpoint():
 @app.route('/api/difficulty/<string:student_id>', methods=['GET'])
 def get_student_difficulty(student_id):
     profile = personalization_engine.get_profile_data(student_id)
-    if "error" in profile: return jsonify(profile), 404
+    if "error" in profile:
+        return jsonify(profile), 404
     return jsonify({"student_id": student_id, "difficulty_level": profile['current_difficulty']})
 
 @app.route('/api/performance', methods=['POST'])
@@ -91,7 +95,7 @@ def update_student_performance():
     profile = personalization_engine.get_profile_data(student_id)
     return jsonify({"message": "Performance updated successfully", "new_difficulty": profile['current_difficulty']})
 
-# --- New Fruit Classifier Endpoints (Corrected) ---
+# --- Fruit Classifier Endpoints ---
 @app.route('/api/game/fruit/classes', methods=['GET'])
 def get_fruit_classes():
     if not fruit_class_names:
@@ -104,7 +108,6 @@ def get_random_fruit_challenge():
     if not fruit_class_names:
         return jsonify({"error": "Fruit game not available"}), 500
     internal_class_name = random.choice(list(fruit_class_names.values()))
-    # BUG FIX: Use the 'data_dir' variable for the correct path
     class_dir = os.path.join(data_dir, 'test', internal_class_name)
     if not os.path.exists(class_dir) or not os.listdir(class_dir):
         return jsonify({"error": f"No test images found for class: {internal_class_name}"}), 404
@@ -113,13 +116,12 @@ def get_random_fruit_challenge():
     display_name = internal_class_name.replace('_', ' ').split(' ')[0]
     with open(image_path, "rb") as image_file:
         image_data_base64 = base64.b64encode(image_file.read()).decode('utf-8')
-    # BUG FIX: Add the "" prefix to the base64 string
-    return jsonify({ "display_name": display_name, "image_data": f"image/jpeg;base64,{image_data_base64}" })
+    return jsonify({"display_name": display_name, "image_data": f"image/jpeg;base64,{image_data_base64}"})
 
 @app.route('/api/game/fruit/classify', methods=['POST'])
 def classify_fruit_endpoint():
     data = request.get_json()
-    if not data or 'image_data' not in data or 'guess' not in data:
+    if not data or 'image_data' not in data or 'guess' not in data :
         return jsonify({"error": "Request must contain 'image_data' and 'guess'"}), 400
     try:
         predicted_internal_label, confidence = image_classifier.predict_from_base64(data['image_data'])
@@ -133,7 +135,134 @@ def classify_fruit_endpoint():
         educational_message = f"Correct! It's a {predicted_display_label}. Well done!"
     else:
         educational_message = f"Not quite! My prediction is {predicted_display_label}. Keep trying!"
-    return jsonify({ "predicted_label": predicted_display_label, "confidence": round(confidence, 4), "is_correct": is_correct, "educational_message": educational_message })
+    return jsonify({
+        "predicted_label": predicted_display_label,
+        "confidence": round(confidence, 4),
+        "is_correct": is_correct,
+        "educational_message": educational_message
+    })
+
+# --- NEW: Prompt Evaluator Endpoint ---
+# Prompt Evaluator Constants
+PROMPT_MODEL = "google/gemini-2.0-flash-001"
+PROMPT_API_KEY = "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"
+PROMPT_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+easy = [
+    "You wake up and can talk to animals. What do you say to your pet?",
+    "Describe your dream treehouse. What does it look like?",
+    "Write a story about a magic pencil that brings drawings to life."
+]
+moderate = [
+    "You find a treasure map in your backyard. What happens next?",
+    "You discover a secret door in your school. Where does it lead?",
+    "Write about a day when everything in your house is upside down."
+]
+hard = [
+    "You are the world’s youngest astronaut and get to fly to the moon. Describe your space trip.",
+    "You invent a robot that does your homework. What goes wrong?",
+    "Write a journal entry from the point of view of a time traveler who visits 100 years into the future."
+]
+
+def get_task(level, index):
+    level_map = {"easy": easy, "moderate": moderate, "hard": hard}
+    return level_map.get(level.lower(), [])[index % 3]
+
+@app.route('/api/game/prompt-evaluator', methods=['POST'])
+def prompt_evaluator():
+    data = request.get_json()
+    level = data.get("level")
+    task_index = int(data.get("task_index", 0))
+    user_prompt = data.get("user_prompt")
+
+    scenario = get_task(level, task_index)
+    if not scenario or not user_prompt:
+        return jsonify({"error": "Missing or invalid level, task_index, or user_prompt."}), 400
+
+    system_prompt = f"""You're a Prompt Quality Evaluator for kids. A student was asked to create a prompt to generate the following: "{scenario}".
+
+Evaluate their prompt for clarity, creativity, and how well it achieves the task. 
+Give result in this format exactly:
+
+Result: <0%, 10%, 25%, 50%, 75%, 100%>
+Feedback: <clear tips to improve>
+"""
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+
+    headers = {
+        "Authorization": f"Bearer {PROMPT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+        "model": PROMPT_MODEL,
+        "messages": messages
+    }
+
+    try:
+        response = requests.post(PROMPT_BASE_URL, headers=headers, json=body, timeout=15)
+        result = response.json()
+        reply = result["choices"][0]["message"]["content"]
+        lines = reply.split("\n")
+        result_line = next((line for line in lines if line.lower().startswith("result:")), None)
+        feedback_line = next((line for line in lines if line.lower().startswith("feedback:")), None)
+
+        return jsonify({
+            "task": scenario,
+            "result": result_line.split(":", 1)[1].strip() if result_line else "Unknown",
+            "feedback": feedback_line.split(":", 1)[1].strip() if feedback_line else "No feedback provided."
+        })
+    except Exception as e:
+        return jsonify({"error": "API request failed.", "details": str(e)}), 500
+
+# --- NEW: Pattern Predictor Endpoint ---
+PATTERN_MODEL = PROMPT_MODEL
+PATTERN_API_KEY = PROMPT_API_KEY
+PATTERN_API_URL = PROMPT_BASE_URL
+
+@app.route('/api/game/pattern-predictor', methods=['POST'])
+def pattern_predictor():
+    data = request.get_json()
+    seq = data.get("sequence")
+    if not seq or len(seq) != 3:
+        return jsonify({"error": "Please provide a sequence of 3 numbers as a list."}), 400
+
+    prompt = (
+        f"Given the number sequence: {seq}, identify the next number in the pattern "
+        "and explain the logic. Respond in this format:\n\n"
+        "**Next Number**: <only number>\n**Reason**: <your explanation>"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {PATTERN_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+        "model": PATTERN_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.5
+    }
+
+    try:
+        response = requests.post(PATTERN_API_URL, headers=headers, json=body, timeout=15)
+        result = response.json()
+        message = result['choices'][0]['message']['content'].strip()
+
+        import re
+        match = re.search(r"\*\*Next Number\*\*:\s*(\d+).*?\*\*Reason\*\*:\s*(.+)", message, re.DOTALL)
+        if match:
+            next_number = match.group(1).strip()
+            reason = match.group(2).strip()
+            return jsonify({"next_number": int(next_number), "reasoning": reason})
+        else:
+            return jsonify({"error": "Could not parse result properly.", "raw": message}), 500
+    except Exception as e:
+        return jsonify({"error": "API request failed.", "details": str(e)}), 500
 
 # --- Main Execution ---
 if __name__ == '__main__':
