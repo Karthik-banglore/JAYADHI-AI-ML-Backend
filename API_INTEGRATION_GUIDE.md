@@ -16,8 +16,10 @@ This CORS setup is a professional security practice that grants your React app p
 
 ## Available Endpoints
 
-### 1. AI Tutor Chatbot ✅ WORKING  
-**Endpoint:** POST `/api/chatbot`  
+### 1. AI Tutor Chatbot ✅ WORKING 
+
+**Endpoint:** POST `/api/chatbot`
+
 **Purpose:** Conversational AI assistance with emotional awareness and generative, kid-friendly answers for AI/ML questions.
 
 **Request**  
