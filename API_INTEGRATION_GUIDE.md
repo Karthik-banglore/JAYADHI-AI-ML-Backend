@@ -413,20 +413,23 @@ Students give a sequence of three numbers. The backend (powered by an LLM) predi
 
 ### **Request**
 
-{“sequence”: // exactly 3 numbers as a list}
+{“sequence”: [10, 20, 30]} // exactly 3 numbers in the sequence
 
 ### **Response**
+```
 
 {“next_number”: 40,
 “reasoning”: “The sequence increases by 10 with each subsequent number (10, 20, 30…). Therefore, the next number is 30 + 10 = 40.”
 }
 
+```
 ### **Test Command**
-
+```
 curl -X POST http://localhost:5001/api/game/pattern-predictor
 -H “Content-Type: application/json”
 -d ‘{“sequence”:}’
 
+```
 ## **General Notes**
 
 - All endpoints use JSON for input and output.
@@ -438,6 +441,7 @@ curl -X POST http://localhost:5001/api/game/pattern-predictor
 ## **Example Integration (JavaScript/React)**
 
 **Prompt Evaluator:**
+```javascript
 async function evaluatePrompt(level, taskIndex, userPrompt) {
   const res = await fetch(’/api/game/prompt-evaluator’, {
     method: ‘POST’,
@@ -446,7 +450,9 @@ async function evaluatePrompt(level, taskIndex, userPrompt) {
   });
   return res.json();
 }
+```
 
+```javascript
 **Pattern Predictor:**
 async function predictPattern(sequence) {
   const res = await fetch(’/api/game/pattern-predictor’, {
@@ -456,8 +462,9 @@ async function predictPattern(sequence) {
   });
   return res.json();
 }
+```
 
-
+---
 
 ## **Tested Results (Actual Output):**
 
