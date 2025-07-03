@@ -18,7 +18,7 @@ This CORS setup is a professional security practice that grants your React app p
 
 ### 1. AI Tutor Chatbot ✅ WORKING  
 **Endpoint:** POST `/api/chatbot`  
-**Purpose:** Conversational AI assistance with emotional awareness.
+**Purpose:** Conversational AI assistance with emotional awareness and generative, kid-friendly answers for AI/ML questions.
 
 **Request**  
 
@@ -39,7 +39,31 @@ curl -X POST -H "Content-Type: application/json" -d '{"student_id":"test_001","m
   "topic": "general"
 }
 
+**Request (AI/ML-related, Generative Example)**
 
+{
+  "student_id": "test_001",
+  "message": "What is AI?",
+  "topic": "general"
+}
+
+**Test Command**
+   curl -X POST -H "Content-Type: application/json" \
+  -d '{"student_id":"test_001","message":"What is AI?","topic":"general"}' \
+  http://localhost:5001/api/chatbot
+**Verified Response:**
+{
+  "emotion_detected": "informative",
+  "reply": "Hey there, curious kiddo! Ever wished your toys could think and do things on their own? Well, that's kind of what AI is all about!\n\n**AI stands for Artificial Intelligence.** It's like giving computers a brain, so they can learn, solve problems, and make decisions, just like you do!\n\nImagine you have a super smart **dog** that can learn tricks.\n\n*   First, you **TEACH** it something: \"Sit!\"\n*   Then, the dog **PRACTICES** and learns what \"Sit\" means.\n*   Finally, when you say \"Sit,\" the dog **KNOWS** what to do!\n\nAI is similar! We teach computers using lots of information, then they practice, and eventually, they can do things like:\n\n*   **Understand what you say:** Like Siri or Alexa on your parent's phone. They listen to your questions and try to answer them!\n*   **Recognize pictures:** Like when you take a photo and the phone knows it's a picture of a cat or a dog.\n*   **Play games:** Some video games use AI to make the characters you are playing against smarter each time you play!\n\nSo, AI is all about making computers smart and capable so they can help us with all sorts of things! It's a bit like magic, but it's real, and it's changing the world!",
+  "student_id": "test_001",
+  "tone": "generative",
+  "topic": "general"
+}
+
+NOTES: 
+- The endpoint automatically detects if the message is about AI/ML and switches to generative mode.
+- For all other topics, it uses template-based, emotionally aware replies.
+-No request/response format changes are needed for the frontend.
 
 ### 2. Sentiment Analysis ✅ WORKING
 
