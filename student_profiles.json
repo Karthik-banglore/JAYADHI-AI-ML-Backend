@@ -22,5 +22,23 @@
                 }
             }
         ]
+    },
+    "demo_stu": {
+        "student_id": "demo_stu",
+        "name": "New Student",
+        "current_difficulty": 3,
+        "performance_history": [
+            0.6
+        ],
+        "sentiment_history": []
+    },
+    "test_student": {
+        "student_id": "test_student",
+        "name": "New Student",
+        "current_difficulty": 2,
+        "performance_history": [
+            0.0
+        ],
+        "sentiment_history": []
     }
 }

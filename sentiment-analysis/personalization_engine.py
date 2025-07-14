@@ -31,7 +31,8 @@ class PersonalizationEngine:
     """
     def __init__(self):
         self.student_profiles: Dict[str, StudentProfile] = {}
-        self.storage_file = config.PROFILE_STORAGE_FILE
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.storage_file = os.path.join(project_root, 'student_profiles.json')
         self._load_profiles()
 
     def _load_profiles(self):

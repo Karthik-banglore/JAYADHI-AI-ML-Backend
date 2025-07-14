@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify
 from datetime import datetime
 from typing import Dict, List, Any
 
-from .personalization_engine import PersonalizationEngine
+from personalization_engine import PersonalizationEngine
+
 
 class TeacherDashboard:
     """
