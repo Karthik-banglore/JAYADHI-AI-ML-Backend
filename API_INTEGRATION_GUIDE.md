@@ -255,11 +255,11 @@ The AI backend supports five core modules:
 
 ## Date: 2 July 2025 (Updates)
 
-### Fruit Classifier Game API Integration Guide
+### 5 Fruit Classifier Game API Integration Guide
 
 **Base URL:** `http://localhost:5001`
 
-**1. Get Fruit Classes**
+**5.1 Get Fruit Classes**
 **Endpoint:** `GET /api/game/fruit/classes`
 **Description:** Fetches a list of all fruit names the AI model can recognize. Use this to dynamically build the UI buttons or dropdown for user guesses.
 **Request:** No request body or parameters.
@@ -297,7 +297,7 @@ async function getFruitClasses() {
 }
 ```
 
-**2. Get Random Fruit Challenge**
+**5.2 Get Random Fruit Challenge**
 **Endpoint:** `GET /api/game/fruit/random`
 **Description:** Returns a random fruit test image (base64 encoded) and its correct simple name. This starts a new game round.
 **Request:** No request body or parameters.
@@ -333,7 +333,7 @@ async function getRandomFruitChallenge() {
 }
 ```
 
-**3. Submit a Guess**
+**5.3 Submit a Guess**
 **Endpoint:** `POST /api/game/fruit/classify`
 **Description:** Sends the current challenge image and the student’s guess to the backend for classification and feedback.
 
@@ -421,7 +421,7 @@ kend % curl http://localhost:5001/api/game/fruit/classes
 
 (mentioned above)
 
-### 2. Prompt Evaluator Game
+### 6. Prompt Evaluator Game
 
 **Endpoint:** `POST /api/game/prompt-evaluator`
 
@@ -470,7 +470,7 @@ curl -X POST http://localhost:5001/api/game/prompt-evaluator \
   - "You invent a robot that does your homework. What goes wrong?"
   - "Write a journal entry from the point of view of a time traveler who visits 100 years into the future."
 
-### 3. Pattern Predictor Game
+### 7. Pattern Predictor Game
 
 **Endpoint:** `POST /api/game/pattern-predictor`
 
@@ -505,9 +505,9 @@ curl -X POST http://localhost:5001/api/game/pattern-predictor \
 
 ## Date: 12 July 2025 (Updates)
 
-## 1. Data Detective Game
+## 8. Data Detective Game
 
-### 1.1 Get Messy Dataset
+### 8.1 Get Messy Dataset
 
 **Endpoint:** `GET /api/game/data-detective/dataset/<difficulty>`
 
@@ -624,7 +624,7 @@ async function getMessyDataset(difficulty) {
 }
 ```
 
-### 1.2 Validate Identified Issues
+### 8.2 Validate Identified Issues
 
 **Endpoint:** `POST /api/game/data-detective/validate`
 
@@ -718,7 +718,7 @@ async function validateIdentifiedIssues(
   --data '{"difficulty":"easy","student_id":"demo_stu","identified_issues":[{"type":"outlier","column":"age"},{"type":"formatting","column":"grade"},{"type":"missing_value","column":"test_score"}]}' --jq .
 ```
 
-### 1.3 Data Detective Help
+### 8.3 Data Detective Help
 
 **Endpoint:** `GET /api/game/data-detective/help`
 
@@ -772,9 +772,9 @@ api call GET /api/game/data-detective/help --jq .
 
 ## Date: 14 July 2025 (Updates)
 
-## 7. AI Quiz Game
+## 9. AI Quiz Game
 
-### a. Get Quiz Question
+### 9.1 Get Quiz Question
 
 **Endpoint:**  
 `GET /api/game/quiz/question/<difficulty>`
@@ -822,7 +822,7 @@ async function getQuizQuestion(difficulty) {
  GET /api/game/quiz/question/beginner --jq .
 ```
 
-### b. Submit Quiz Answer
+### 9.2 Submit Quiz Answer
 
 **Endpoint:**  
 `POST /api/game/quiz/answer`
@@ -876,7 +876,7 @@ async function submitQuizAnswer(sessionId, selectedAnswer, studentId) {
   --data '{"session_id":"session_8496","selected_answer":2,"student_id":"test_student"}' --jq .
 ```
 
-### c. Get Quiz Hint
+### 9.3 Get Quiz Hint
 
 **Endpoint:**  
 `POST /api/game/quiz/hint`
@@ -927,7 +927,7 @@ async function getQuizHint(sessionId, studentMessage) {
 
 ## 10. Teacher Dashboard & Analytics
 
-### a. Class Overview
+### 10.1 Class Overview
 
 **Endpoint:**  
 `GET /api/teacher/class-overview`
@@ -979,7 +979,7 @@ async function getClassOverview() {
  GET /api/teacher/class-overview --jq .
 ```
 
-### b. Individual Student Report
+### 10.2 Individual Student Report
 
 **Endpoint:**  
 `GET /api/teacher/student/<student_id>`
@@ -1031,7 +1031,7 @@ async function getStudentReport(studentId) {
  GET /api/teacher/student/demo_stu --jq .
 ```
 
-### c. Intervention Alerts
+### 10.3 Intervention Alerts
 
 **Endpoint:**  
 `GET /api/teacher/alerts`
